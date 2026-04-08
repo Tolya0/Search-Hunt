@@ -27,3 +27,6 @@ target/
 
 ### Mac OS ###
 .DS_Store
+
+hibernate.cfg.xml
+*.db

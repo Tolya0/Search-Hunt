@@ -1,0 +1,40 @@
+package org.kurilin.recruitment.shared.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.kurilin.recruitment.shared.enums.InterviewStatus;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "interviews")
+@NoArgsConstructor
+@RequiredArgsConstructor
+public class Interview
+    {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @NonNull
+        @ManyToOne(fetch = FetchType.LAZY)
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        @JoinColumn(name = "application_id")
+        private Application application;
+
+        @NonNull
+        @Column(name = "scheduled_date", nullable = false)
+        private LocalDateTime scheduledDate;
+
+        @Enumerated(EnumType.STRING)
+        @Column(name = "status", nullable = false, length = 20)
+        private InterviewStatus status = InterviewStatus.SCHEDULED;
+
+
+    }
