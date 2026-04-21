@@ -1,21 +1,20 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "evaluations")
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Evaluation
     {
         @Id
@@ -44,6 +43,11 @@ public class Evaluation
         @CreationTimestamp
         @Column(name = "evaluated_at", updatable = false)
         private LocalDateTime evaluatedAt;
+
+        @NonNull
+        @Column(name = "is_passed")
+        private Boolean isPassed = false;
+
 
 
     }

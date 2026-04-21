@@ -1,4 +1,4 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.kurilin.recruitment.shared.enums.VacancyStatus;
+import org.kurilin.recruitment.shared.enums.WorkFormat;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "vacancies")
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Vacancy
     {
         @Id
@@ -49,5 +51,23 @@ public class Vacancy
         @CreationTimestamp
         @Column(name = "created_at", updatable = false)
         private LocalDateTime createdAt;
+
+        @NonNull
+        @Column(name = "salary_min")
+        private Integer salaryMin;
+
+        @NonNull
+        @Column(name = "salary_max")
+        private Integer salaryMax;
+
+        @NonNull
+        @Column(name = "description", columnDefinition = "TEXT")
+        private String description;
+
+        @Enumerated(EnumType.STRING)
+        @Column(name = "work_format", nullable = false, length = 20)
+        private WorkFormat workFormat = WorkFormat.OFFICE;
+
+
 
     }

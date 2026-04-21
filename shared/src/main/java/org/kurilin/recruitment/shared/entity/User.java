@@ -1,4 +1,4 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,8 +10,9 @@ import org.kurilin.recruitment.shared.enums.Role;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class User
     {
         @Id

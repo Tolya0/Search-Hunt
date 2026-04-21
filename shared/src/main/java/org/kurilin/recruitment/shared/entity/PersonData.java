@@ -1,4 +1,4 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -8,8 +8,9 @@ import java.time.*;
 @Table(name = "person_data")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PersonData
     {
         @Id

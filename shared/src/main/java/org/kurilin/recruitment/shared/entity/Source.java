@@ -1,4 +1,4 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,8 +7,9 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "sources")
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Source
     {
         @Id

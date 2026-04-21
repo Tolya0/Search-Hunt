@@ -1,4 +1,4 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
@@ -12,8 +12,9 @@ import java.util.ArrayList;
 @Setter
 @Entity
 @Table(name = "departments")
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Department
     {
         @Id

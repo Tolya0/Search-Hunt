@@ -1,21 +1,20 @@
-package org.kurilin.recruitment.shared.entities;
+package org.kurilin.recruitment.shared.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.kurilin.recruitment.shared.enums.InterviewStatus;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "interviews")
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Interview
     {
         @Id
@@ -36,5 +35,8 @@ public class Interview
         @Column(name = "status", nullable = false, length = 20)
         private InterviewStatus status = InterviewStatus.SCHEDULED;
 
+        @NonNull
+        @Column(name = "location", nullable = false, length = 255)
+        private String location;
 
     }

@@ -7,5 +7,5 @@ public enum ApplicationStatus
         INTERVIEW_SCHEDULED,
         REJECTED,
         OFFERED,
-        HIRING
+        HIRED
     }
