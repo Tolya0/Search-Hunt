@@ -5,23 +5,27 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "candidates")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "candidates")
 public class Candidate
     {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @ToString.Include
         private Long id;
 
         @Column(name = "experience")
+        @ToString.Include
         private Integer experience;
 
         @Column(name = "skills", columnDefinition = "TEXT")
@@ -29,6 +33,7 @@ public class Candidate
 
         @CreationTimestamp
         @Column(name = "created_at", updatable = false)
+        @ToString.Include
         private LocalDateTime createdAt;
 
         @NonNull
@@ -38,9 +43,12 @@ public class Candidate
         private PersonData personData;
 
         @Column(name = "resume_url", length = 255)
+        @ToString.Include
         private String resumeUrl;
 
         @Column(name = "expected_salary")
         private Integer expectedSalary;
 
+        @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+        private transient Set<Application> applications = new HashSet<>();
     }

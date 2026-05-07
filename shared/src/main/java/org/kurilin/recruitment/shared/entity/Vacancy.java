@@ -7,67 +7,76 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.kurilin.recruitment.shared.enums.VacancyStatus;
 import org.kurilin.recruitment.shared.enums.WorkFormat;
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-//@Builder
+
 @Getter
 @Setter
-@Entity
-@Table(name = "vacancies")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vacancy
-    {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+@ToString(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "vacancies")
+public class Vacancy {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Include
+    private Long id;
 
-        @NonNull
-        @Column(name = "title", nullable = false, length = 100)
-        private String title;
+    @NonNull
+    @Column(name = "title", nullable = false, length = 100)
+    @ToString.Include
+    private String title;
 
-        @NonNull
-        @ManyToOne(fetch = FetchType.LAZY)
-        @OnDelete(action = OnDeleteAction.CASCADE)
-        @JoinColumn(name = "department_id")
-        private Department department;
+    @NonNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "department_id")
+    private Department department;
 
-        @NonNull
-        @ManyToOne(fetch = FetchType.LAZY)
-        @OnDelete(action = OnDeleteAction.SET_NULL)
-        @JoinColumn(name = "hr_manager_id")
-        private User hrManager;
+    @NonNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "hr_manager_id")
+    private User hrManager;
 
-        @NonNull
-        @Column(name = "requirements", columnDefinition = "TEXT")
-        private String requirements;
+    @NonNull
+    @Column(name = "requirements", columnDefinition = "TEXT")
+    private String requirements;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "status", nullable = false, length = 20)
-        private VacancyStatus status = VacancyStatus.OPEN;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    @ToString.Include
+    private VacancyStatus status = VacancyStatus.OPEN;
 
-        @CreationTimestamp
-        @Column(name = "created_at", updatable = false)
-        private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-        @NonNull
-        @Column(name = "salary_min")
-        private Integer salaryMin;
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
 
-        @NonNull
-        @Column(name = "salary_max")
-        private Integer salaryMax;
+    @NonNull
+    @Column(name = "salary_min")
+    private Integer salaryMin;
 
-        @NonNull
-        @Column(name = "description", columnDefinition = "TEXT")
-        private String description;
+    @NonNull
+    @Column(name = "salary_max")
+    private Integer salaryMax;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "work_format", nullable = false, length = 20)
-        private WorkFormat workFormat = WorkFormat.OFFICE;
+    @NonNull
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "work_format", nullable = false, length = 20)
+    @ToString.Include
+    private WorkFormat workFormat = WorkFormat.OFFICE;
 
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private transient Set<Application> applications = new HashSet<>();
 
-    }
+}

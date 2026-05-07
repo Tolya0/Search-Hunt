@@ -10,15 +10,17 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "evaluations")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "evaluations")
 public class Evaluation
     {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @ToString.Include
         private Long id;
 
         @NonNull
@@ -35,6 +37,7 @@ public class Evaluation
 
         @NonNull
         @Column(name = "score")
+        @ToString.Include
         private Integer score;
 
         @Column(name = "comments", columnDefinition = "TEXT")
@@ -46,8 +49,6 @@ public class Evaluation
 
         @NonNull
         @Column(name = "is_passed")
+        @ToString.Include
         private Boolean isPassed = false;
-
-
-
     }
