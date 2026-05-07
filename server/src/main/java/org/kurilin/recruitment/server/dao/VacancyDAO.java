@@ -4,5 +4,7 @@ import org.kurilin.recruitment.shared.entity.Vacancy;
 import java.util.List;
 
 public interface VacancyDAO extends GenericDAO<Vacancy> {
-    List<Vacancy> findOpenVacanciesByDepartment(Long departmentId);
+    List<Vacancy> findOpenVacanciesByDepartmentId(Long departmentId);
+    List<Vacancy> findVacanciesByCriteria(String keyword, Integer minSalary);
+    List<Vacancy> findClosedVacancies();
 }

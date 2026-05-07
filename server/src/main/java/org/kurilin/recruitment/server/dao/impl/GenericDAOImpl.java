@@ -68,7 +68,7 @@ public class GenericDAOImpl<T> implements GenericDAO<T> {
     @Override
     public Optional<T> findById(Class<T> clazz, Long id) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            T entity = session.get(clazz, id);
+            T entity = session.find(clazz, id);
             if (entity != null) {
                 logger.info("Entity was found: {} with id: {}", clazz.getSimpleName(), id);
             } else {

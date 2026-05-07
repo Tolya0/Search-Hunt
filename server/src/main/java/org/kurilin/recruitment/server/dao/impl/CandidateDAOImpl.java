@@ -8,6 +8,7 @@ import org.kurilin.recruitment.shared.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Optional;
 
 public class CandidateDAOImpl extends GenericDAOImpl<Candidate> implements CandidateDAO {
     private static final Logger logger = LoggerFactory.getLogger(CandidateDAOImpl.class);
@@ -28,4 +29,5 @@ public class CandidateDAOImpl extends GenericDAOImpl<Candidate> implements Candi
             throw new DaoException("Error finding candidates: " + skills, e);
         }
     }
+
 }
