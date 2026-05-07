@@ -30,3 +30,4 @@ target/
 
 hibernate.cfg.xml
 *.db
+logs/
