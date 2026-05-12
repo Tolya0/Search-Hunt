@@ -9,9 +9,12 @@ import org.kurilin.recruitment.server.service.EvaluationService;
 import org.kurilin.recruitment.shared.entity.Evaluation;
 import org.kurilin.recruitment.shared.entity.Interview;
 import org.kurilin.recruitment.shared.entity.User;
+import org.kurilin.recruitment.shared.enums.InterviewStatus;
 import org.kurilin.recruitment.shared.exception.RecruitmentBusinessException;
 import org.kurilin.recruitment.shared.network.Response;
 import org.kurilin.recruitment.shared.network.dto.EvaluationCreateRequestDTO;
+import org.kurilin.recruitment.shared.network.dto.EvaluationRequestDTO;
+import org.kurilin.recruitment.shared.network.dto.EvaluationResponseDTO;
 import org.kurilin.recruitment.shared.util.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,7 @@ public class EvaluationServiceImpl implements EvaluationService {
         this.interviewDAO = interviewDAO;
         this.userDAO = userDAO;
     }
+
     @Override
     public Response addEvaluation(String payload) throws RecruitmentBusinessException {
         logger.info("Add evaluation request: {}", payload);
@@ -60,9 +64,36 @@ public class EvaluationServiceImpl implements EvaluationService {
                 .isPassed(dto.getIsPassed())
                 .comments(dto.getComments())
                 .build();
+
+        Interview interview = interviewOpt.get();
+        interview.setStatus(InterviewStatus.COMPLETED);
+        interviewDAO.update(interview);
         evaluationDAO.save(evaluation);
         logger.info("Evaluation added successfully for interview id: {}", dto.getInterviewId());
 
         return new Response(true, "Evaluation added successfully", null);
+    }
+
+    @Override
+    public Response getEvaluation(String payload) throws RecruitmentBusinessException {
+        logger.info("Get evaluation request: {}", payload);
+        EvaluationRequestDTO dto = gson.fromJson(payload, EvaluationRequestDTO.class);
+        if (dto == null || dto.getInterviewId() == null) {
+            throw new RecruitmentBusinessException("Invalid request format: interview's id is required");
+        }
+        Optional<Evaluation> evalOpt = evaluationDAO.findByInterviewId(dto.getInterviewId());
+
+        if (evalOpt.isPresent()) {
+            Evaluation eval = evalOpt.get();
+            EvaluationResponseDTO responseDTO = EvaluationResponseDTO.builder()
+                    .score(eval.getScore())
+                    .comments(eval.getComments())
+                    .isPassed(eval.getIsPassed())
+                    .build();
+            logger.info("Evaluation found for interview id: {}", dto.getInterviewId());
+            return new Response(true, "Found", gson.toJson(responseDTO));
+        }
+        logger.info("Evaluation not found for interview id: {}", dto.getInterviewId());
+        return new Response(false, "Not found", null);
     }
 }

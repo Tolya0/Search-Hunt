@@ -16,7 +16,7 @@ public class CandidateDAOImpl extends GenericDAOImpl<Candidate> implements Candi
     @Override
     public List<Candidate> findCandidatesByCriteria(String skills, int minExperience) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            String query = "from Candidate c where lower(c.skills) like lower(:skills) and c.experience >= :minExperience";
+            String query = "from Candidate c join fetch c.personData where lower(c.skills) like lower(:skills) and c.experience >= :minExperience";
 
             List<Candidate> candidates = session.createQuery(query, Candidate.class)
                     .setParameter("skills", "%" + skills + "%")
@@ -27,6 +27,19 @@ public class CandidateDAOImpl extends GenericDAOImpl<Candidate> implements Candi
         } catch (Exception e) {
             logger.error("Error finding candidates: {}", skills, e);
             throw new DaoException("Error finding candidates: " + skills, e);
+        }
+    }
+
+    @Override
+    public Optional<Candidate> findByUserId(Long userId) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            String query = "from Candidate c join fetch c.personData pd where pd.id = (select u.personData.id from User u where u.id = :userId)";
+            return session.createQuery(query, Candidate.class)
+                    .setParameter("userId", userId)
+                    .uniqueResultOptional();
+        } catch (Exception e) {
+            logger.error("Error finding candidate by user ID: {}", userId, e);
+            throw new DaoException("Error finding candidate by user ID: " + userId, e);
         }
     }
 

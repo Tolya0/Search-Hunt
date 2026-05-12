@@ -17,7 +17,7 @@ public class VacancyDAOImpl extends GenericDAOImpl<Vacancy> implements VacancyDA
     @Override
     public List<Vacancy> findOpenVacanciesByDepartmentId(Long departmentId) {
         try(Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            String query = "from Vacancy v where v.department.id = :departmentId and v.status = :status";
+            String query = "from Vacancy v join fetch v.department where v.department.id = :departmentId and v.status = :status";
 
             List<Vacancy> vacancies = session.createQuery(query, Vacancy.class)
                     .setParameter("departmentId", departmentId)
@@ -34,11 +34,12 @@ public class VacancyDAOImpl extends GenericDAOImpl<Vacancy> implements VacancyDA
     @Override
     public List<Vacancy> findVacanciesByCriteria(String keyword, Integer wantedSalary) {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            String hql = "FROM Vacancy v WHERE v.status = 'OPEN' " +
+            String hql = "FROM Vacancy v join fetch v.department where v.status = :status " +
                     "AND (lower(v.title) LIKE lower(:kw) OR lower(v.requirements) LIKE lower(:kw)) " +
                     "AND v.salaryMax >= :wantedSalary";
 
             List<Vacancy> vacancies = session.createQuery(hql, Vacancy.class)
+                    .setParameter("status", VacancyStatus.OPEN)
                     .setParameter("kw", "%" + keyword + "%")
                     .setParameter("wantedSalary", wantedSalary != null ? wantedSalary : 0)
                     .getResultList();
@@ -53,7 +54,7 @@ public class VacancyDAOImpl extends GenericDAOImpl<Vacancy> implements VacancyDA
     @Override
     public List<Vacancy> findClosedVacancies() {
         try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            String query = "from Vacancy v where v.status = :status";
+            String query = "from Vacancy v join fetch v.department where v.status = :status";
 
             List<Vacancy> vacancies = session.createQuery(query, Vacancy.class)
                     .setParameter("status", VacancyStatus.CLOSED)

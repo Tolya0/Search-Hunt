@@ -197,20 +197,18 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userOpt.get();
-        if (user.getPersonData() != null) {
-            if (dto.getFullName() != null) user.getPersonData().setFullName(dto.getFullName());
-            if (dto.getPhone() != null && !dto.getPhone().equals(user.getPersonData().getPhone())) {
-                if (personDataDAO.findByPhone(dto.getPhone()).isPresent()) {
-                    throw new DuplicateEntityException("Phone is already taken");
-                }
-                user.getPersonData().setPhone(dto.getPhone());
+        if (dto.getFullName() != null) user.getPersonData().setFullName(dto.getFullName());
+        if (dto.getPhone() != null && !dto.getPhone().equals(user.getPersonData().getPhone())) {
+            if (personDataDAO.findByPhone(dto.getPhone()).isPresent()) {
+                throw new DuplicateEntityException("Phone is already taken");
             }
-            if (dto.getEmail() != null && !dto.getEmail().equals(user.getPersonData().getEmail())) {
-                if (personDataDAO.findByEmail(dto.getEmail()).isPresent()) {
-                    throw new DuplicateEntityException("Email is already taken");
-                }
-                user.getPersonData().setEmail(dto.getEmail());
+            user.getPersonData().setPhone(dto.getPhone());
+        }
+        if (dto.getEmail() != null && !dto.getEmail().equals(user.getPersonData().getEmail())) {
+            if (personDataDAO.findByEmail(dto.getEmail()).isPresent()) {
+                throw new DuplicateEntityException("Email is already taken");
             }
+            user.getPersonData().setEmail(dto.getEmail());
         }
 
         userDAO.update(user);

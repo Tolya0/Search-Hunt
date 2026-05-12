@@ -42,7 +42,6 @@ public class ClientHandler implements Runnable {
 
                     Response response = dispatcher.dispatch(request);
                     out.println(gson.toJson(response));
-                    //out.println("{\"success\": true, \"message\": \"Message received!\"}");
                 } catch (RecruitmentBusinessException e){
                     logger.warn("Business error: {}", e.getMessage());
                     Response response = new Response(false, e.getMessage(), null);

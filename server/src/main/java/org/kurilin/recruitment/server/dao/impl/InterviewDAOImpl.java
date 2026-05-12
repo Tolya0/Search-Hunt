@@ -45,7 +45,13 @@ public class InterviewDAOImpl extends GenericDAOImpl<Interview> implements Inter
     @Override
     public List<Interview> findByHrManagerId(Long hrManagerId) {
         try(Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
-            String query = "from Interview i where i.status != :cancelStatus and i.application.vacancy.hrManager.id = :hrId order by i.scheduledDate asc";
+            String query = """
+            from Interview i
+            join fetch i.application a
+            join fetch a.candidate c
+            join fetch c.personData
+            join fetch a.vacancy v
+            where i.status != :cancelStatus and v.hrManager.id = :hrId order by i.scheduledDate""";
 
             List<Interview> interviews = session.createQuery(query, Interview.class)
                     .setParameter("hrId", hrManagerId)
@@ -57,6 +63,25 @@ public class InterviewDAOImpl extends GenericDAOImpl<Interview> implements Inter
         } catch (Exception e) {
             logger.error("Error finding interviews by HR Manager id: {}", hrManagerId, e);
             throw new DaoException("Error finding interviews by HR Manager id: " + hrManagerId, e);
+        }
+    }
+
+    @Override
+    public List<Interview> findByApplicationId(Long applicationId) {
+        try (Session session = HibernateSessionFactory.getSessionFactory().openSession()) {
+            String query = """
+            from Interview
+            where application.id = :appId""";
+
+            List<Interview> interviews = session.createQuery(query, Interview.class)
+                    .setParameter("appId", applicationId)
+                    .getResultList();
+
+            logger.info("Interviews found for application id {}: {}", applicationId, interviews.size());
+            return interviews;
+        } catch (Exception e) {
+            logger.error("Error finding interviews by application id: {}", applicationId, e);
+            throw new DaoException("Error finding interviews by application id: " + applicationId, e);
         }
     }
 }

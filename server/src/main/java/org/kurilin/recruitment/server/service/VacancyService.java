@@ -10,4 +10,5 @@ public interface VacancyService {
     Response getOpenVacancies(String payload) throws RecruitmentBusinessException;
     Response closeVacancy(String payload) throws RecruitmentBusinessException;
     Response generateTimeReport(String payload) throws RecruitmentBusinessException;
+    Response getAllDepartments(String payload) throws RecruitmentBusinessException;
 }

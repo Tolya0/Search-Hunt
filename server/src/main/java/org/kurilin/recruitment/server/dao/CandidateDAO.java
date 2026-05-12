@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface CandidateDAO extends GenericDAO<Candidate> {
     List<Candidate> findCandidatesByCriteria(String skills, int minExperience);
+    Optional<Candidate> findByUserId(Long userId);
 }

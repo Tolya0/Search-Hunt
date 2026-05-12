@@ -13,4 +13,5 @@ public interface ApplicationService {
     Response getMyApplications(String payload) throws RecruitmentBusinessException;
     Response generateFunnelReport(String payload) throws RecruitmentBusinessException;
     Response generateSourcesReport(String payload) throws RecruitmentBusinessException;
+
 }

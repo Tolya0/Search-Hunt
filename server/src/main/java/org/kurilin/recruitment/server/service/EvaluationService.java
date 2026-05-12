@@ -5,4 +5,5 @@ import org.kurilin.recruitment.shared.network.Response;
 
 public interface EvaluationService {
     Response addEvaluation(String payload) throws RecruitmentBusinessException;
+    Response getEvaluation(String payload) throws RecruitmentBusinessException;
 }

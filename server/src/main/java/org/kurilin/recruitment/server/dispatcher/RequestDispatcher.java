@@ -46,6 +46,10 @@ public class RequestDispatcher {
                 logger.info("Received login request");
                 yield userService.login(request.getPayload());
             }
+            case GET_EVALUATION -> {
+                logger.info("Received get evaluation request");
+                yield evaluationService.getEvaluation(request.getPayload());
+            }
             case SEARCH_CANDIDATES -> {
                 logger.info("Received search candidates request");
                 yield candidateService.searchCandidates(request.getPayload());
@@ -77,6 +81,10 @@ public class RequestDispatcher {
             case GET_ALL_SOURCES -> {
                 logger.info("Received get all sources request");
                 yield sourceService.getAllSources();
+            }
+            case GET_ALL_DEPARTMENTS -> {
+                logger.info("Received get all departments request");
+                yield vacancyService.getAllDepartments(request.getPayload());
             }
             case GET_HR_INTERVIEWS -> {
                 logger.info("Received get HR interviews request");
@@ -121,6 +129,10 @@ public class RequestDispatcher {
             case GET_MY_APPLICATIONS -> {
                 logger.info("Received get my applications request");
                 yield applicationService.getMyApplications(request.getPayload());
+            }
+            case GET_CANDIDATE_PROFILE -> {
+                logger.info("Received get candidate profile request");
+                yield candidateService.getMyProfile(request.getPayload());
             }
             case ADD_USER -> {
                 logger.info("Received add user request");

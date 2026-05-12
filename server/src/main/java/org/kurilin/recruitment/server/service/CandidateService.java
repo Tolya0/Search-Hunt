@@ -7,4 +7,5 @@ public interface CandidateService {
     Response searchCandidates(String payload) throws RecruitmentBusinessException;
     Response registerCandidate(String payload) throws RecruitmentBusinessException;
     Response updateCandidate(String payload) throws RecruitmentBusinessException;
+    Response getMyProfile(String payload) throws RecruitmentBusinessException;
 }

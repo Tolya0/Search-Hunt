@@ -12,10 +12,7 @@ import org.kurilin.recruitment.shared.enums.Role;
 import org.kurilin.recruitment.shared.exception.DuplicateEntityException;
 import org.kurilin.recruitment.shared.exception.RecruitmentBusinessException;
 import org.kurilin.recruitment.shared.network.Response;
-import org.kurilin.recruitment.shared.network.dto.CandidateRegistrationRequestDTO;
-import org.kurilin.recruitment.shared.network.dto.CandidateResponseDTO;
-import org.kurilin.recruitment.shared.network.dto.CandidateSearchRequestDTO;
-import org.kurilin.recruitment.shared.network.dto.CandidateUpdateRequestDTO;
+import org.kurilin.recruitment.shared.network.dto.*;
 import org.kurilin.recruitment.shared.util.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +51,8 @@ public class CandidateServiceImpl implements CandidateService {
         List<CandidateResponseDTO> candidateResponseDTOList = candidateList.stream()
                 .map(candidate -> CandidateResponseDTO.builder()
                         .id(candidate.getId())
-                        .fullName(candidate.getPersonData().getFullName() != null ? candidate.getPersonData().getFullName() : "N/A")
-                        .email(candidate.getPersonData().getEmail() != null ? candidate.getPersonData().getEmail() : "N/A")
+                        .fullName(candidate.getPersonData().getFullName())
+                        .email(candidate.getPersonData().getEmail())
                         .experience(candidate.getExperience())
                         .skills(candidate.getSkills())
                         .expectedSalary(candidate.getExpectedSalary())
@@ -108,8 +105,9 @@ public class CandidateServiceImpl implements CandidateService {
                 .personData(cData)
                 .build();
 
-        candidateDAO.save(c);
+
         userService.saveUser(user);
+        candidateDAO.update(c);
         logger.info("Candidate registered successfully: {}", dto.getUsername());
 
         return new Response(true, "Candidate registered successfully", null);
@@ -132,25 +130,48 @@ public class CandidateServiceImpl implements CandidateService {
         if (dto.getExperience() != null) candidate.setExperience(dto.getExperience());
         if (dto.getSkills() != null) candidate.setSkills(dto.getSkills());
         if (dto.getExpectedSalary() != null) candidate.setExpectedSalary(dto.getExpectedSalary());
-        if (candidate.getPersonData() != null) {
-            if (dto.getFullName() != null) candidate.getPersonData().setFullName(dto.getFullName());
-            if (dto.getPhone() != null && !dto.getPhone().equals(candidate.getPersonData().getPhone())) {
-                if (personDataDAO.findByPhone(dto.getPhone()).isPresent()) {
-                    throw new DuplicateEntityException("Phone is already taken");
-                }
-                candidate.getPersonData().setPhone(dto.getPhone());
+        if (dto.getResumeURL() != null) candidate.setResumeUrl(dto.getResumeURL());
+        if (dto.getFullName() != null) candidate.getPersonData().setFullName(dto.getFullName());
+        if (dto.getPhone() != null && !dto.getPhone().equals(candidate.getPersonData().getPhone())) {
+            if (personDataDAO.findByPhone(dto.getPhone()).isPresent()) {
+                throw new DuplicateEntityException("Phone is already taken");
             }
-            if (dto.getEmail() != null && !dto.getEmail().equals(candidate.getPersonData().getEmail())) {
-                if (personDataDAO.findByEmail(dto.getEmail()).isPresent()) {
-                    throw new DuplicateEntityException("Email is already taken");
-                }
-                candidate.getPersonData().setEmail(dto.getEmail());
-            }
-            if (dto.getBirthDate() != null) candidate.getPersonData().setBirthDate(dto.getBirthDate());
+            candidate.getPersonData().setPhone(dto.getPhone());
         }
+        if (dto.getEmail() != null && !dto.getEmail().equals(candidate.getPersonData().getEmail())) {
+            if (personDataDAO.findByEmail(dto.getEmail()).isPresent()) {
+                throw new DuplicateEntityException("Email is already taken");
+            }
+            candidate.getPersonData().setEmail(dto.getEmail());
+        }
+        if (dto.getBirthDate() != null) candidate.getPersonData().setBirthDate(dto.getBirthDate());
 
         candidateDAO.update(candidate);
         logger.info("Candidate updated successfully: {}", candidate.getId());
         return new Response(true, "Profile updated successfully", null);
+    }
+
+    @Override
+    public Response getMyProfile(String payload) throws RecruitmentBusinessException {
+        logger.info("Get my profile: {}", payload);
+        CandidateProfileRequestDTO dto = gson.fromJson(payload, CandidateProfileRequestDTO.class);
+        Optional<Candidate> candidateOpt = candidateDAO.findByUserId(dto.getId());
+        if (candidateOpt.isEmpty()) {
+            throw new RecruitmentBusinessException("Candidate not found");
+        }
+        Candidate candidate = candidateOpt.get();
+        CandidateResponseDTO responseDTO = CandidateResponseDTO.builder()
+                .id(candidate.getId())
+                .fullName(candidate.getPersonData().getFullName())
+                .email(candidate.getPersonData().getEmail())
+                .phone(candidate.getPersonData().getPhone())
+                .birthDate(candidate.getPersonData().getBirthDate())
+                .experience(candidate.getExperience())
+                .skills(candidate.getSkills())
+                .expectedSalary(candidate.getExpectedSalary())
+                .resumeURL(candidate.getResumeUrl())
+                .build();
+        logger.info("Candidate profile retrieved successfully: {}", candidate.getId());
+        return new Response(true, "Profile loaded.", gson.toJson(responseDTO));
     }
 }

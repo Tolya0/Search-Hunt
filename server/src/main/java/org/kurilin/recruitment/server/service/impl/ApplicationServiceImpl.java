@@ -11,6 +11,8 @@ import org.kurilin.recruitment.shared.network.dto.*;
 import org.kurilin.recruitment.shared.util.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -21,18 +23,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final VacancyDAO vacancyDAO;
     private final SourceDAO sourceDAO;
     private final EvaluationDAO evaluationDAO;
+    private final InterviewDAO interviewDAO;
     private final Gson gson = GsonFactory.getGson();
 
     public ApplicationServiceImpl(ApplicationDAO applicationDAO,
                                   CandidateDAO candidateDAO,
                                   VacancyDAO vacancyDAO,
                                   SourceDAO sourceDAO,
-                                  EvaluationDAO evaluationDAO) {
+                                  EvaluationDAO evaluationDAO,
+                                  InterviewDAO interviewDAO) {
         this.applicationDAO = applicationDAO;
         this.candidateDAO = candidateDAO;
         this.vacancyDAO = vacancyDAO;
         this.sourceDAO = sourceDAO;
         this.evaluationDAO = evaluationDAO;
+        this.interviewDAO = interviewDAO;
     }
 
     @Override
@@ -66,7 +71,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new RecruitmentBusinessException("Invalid request format: application's Id is required");
         }
 
-        Optional<Application> applicationOpt = applicationDAO.findById(Application.class, dto.getApplicationId());
+        Optional<Application> applicationOpt = applicationDAO.findByIdWithDetails(dto.getApplicationId());
         if (applicationOpt.isEmpty()) {
             throw new RecruitmentBusinessException("Application not found");
         }
@@ -150,8 +155,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<Application> applications = applicationDAO.findByVacancyId(dto.getVacancyId());
         List<ApplicationResponseDTO> responseDTO = applications.stream()
                 .map(application -> ApplicationResponseDTO.builder()
-                        .applicationId(application.getId())
+                        .id(application.getId())
                         .candidateName(application.getCandidate().getPersonData().getFullName())
+                        .candidateEmail(application.getCandidate().getPersonData().getEmail())
+                        .candidatePhone(application.getCandidate().getPersonData().getPhone())
+                        .candidateSkills(application.getCandidate().getSkills())
+                        .candidateExperience(application.getCandidate().getExperience())
+                        .candidateResumeUrl(application.getCandidate().getResumeUrl())
                         .status(application.getStatus())
                         .appliedAt(application.getAppliedAt())
                         .sourceName(application.getSource() != null ? application.getSource().getName() : "Unknown")
@@ -175,6 +185,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         Optional<Vacancy> vacancyOpt = vacancyDAO.findById(Vacancy.class, dto.getVacancyId());
         if (vacancyOpt.isEmpty()) {
             throw new RecruitmentBusinessException("Vacancy not found");
+        }
+        if (applicationDAO.isCandidateAppliedToVacancy(dto.getCandidateId(), dto.getVacancyId())) {
+            throw new RecruitmentBusinessException("You have already applied to this vacancy!");
         }
         Optional<Source> sourceOpt = sourceDAO.findById(Source.class, dto.getSourceId());
         Application application = Application.builder()
@@ -201,7 +214,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         Application application = applicationOpt.get();
 
-        Set<Interview> interviews = application.getInterviews();
+        List<Interview> interviews = interviewDAO.findByApplicationId(dto.getApplicationId());
         if (interviews.isEmpty()) {
             logger.warn("No interviews found for application id: {}", dto.getApplicationId());
             return new Response(true, "No evaluations found", gson.toJson(new AggregationResponseDTO(0.0, 0, false)));
@@ -246,7 +259,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (dto == null || dto.getApplicationId() == null || dto.getFinalSalary() == null) {
             throw new RecruitmentBusinessException("Invalid request format: application's Id and final salary are required");
         }
-        Application application = applicationDAO.findById(Application.class, dto.getApplicationId())
+        Application application = applicationDAO.findByIdWithDetails(dto.getApplicationId())
                 .orElseThrow(() -> new RecruitmentBusinessException("Application not found"));
         if (application.getStatus() == ApplicationStatus.REJECTED) {
             throw new RecruitmentBusinessException("Cannot generate offer for rejected application");
@@ -288,8 +301,20 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .map(application -> {
                     String safeOfferText;
                     if (application.getStatus() == ApplicationStatus.OFFERED ||
-                        application.getStatus() == ApplicationStatus.HIRED) {
+                            application.getStatus() == ApplicationStatus.HIRED) {
                         safeOfferText = application.getOfferText();
+                    } else if (application.getStatus() == ApplicationStatus.INTERVIEW_SCHEDULED) {
+                        List<Interview> interviews = interviewDAO.findByApplicationId(application.getId());
+                        Optional<Interview> interviewOpt = interviews.stream()
+                                .max(Comparator.comparing(Interview::getScheduledDate));
+                        if (interviewOpt.isPresent()) {
+                            Interview interview = interviewOpt.get();
+                            safeOfferText = "Interview: " +
+                                    interview.getScheduledDate().format(DateTimeFormatter.ofPattern("dd.MM HH:mm")) +
+                                    "\nLocation: " + interview.getLocation();
+                        } else {
+                            safeOfferText = "No interview scheduled yet.";
+                        }
                     } else {
                         safeOfferText = "No offer yet.";
                     }

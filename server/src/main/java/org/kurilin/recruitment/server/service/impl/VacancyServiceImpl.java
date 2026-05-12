@@ -11,6 +11,7 @@ import org.kurilin.recruitment.shared.entity.Department;
 import org.kurilin.recruitment.shared.entity.User;
 import org.kurilin.recruitment.shared.entity.Vacancy;
 import org.kurilin.recruitment.shared.enums.ApplicationStatus;
+import org.kurilin.recruitment.shared.enums.Role;
 import org.kurilin.recruitment.shared.enums.VacancyStatus;
 import org.kurilin.recruitment.shared.exception.RecruitmentBusinessException;
 import org.kurilin.recruitment.shared.network.Response;
@@ -100,6 +101,7 @@ public class VacancyServiceImpl implements VacancyService {
                         .salaryMax(vacancy.getSalaryMax())
                         .description(vacancy.getDescription())
                         .workFormat(vacancy.getWorkFormat())
+                        .status(vacancy.getStatus())
                         .build())
                 .toList();
         logger.info("Vacancies found: {}", vacancyList.size());
@@ -215,5 +217,20 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
         logger.info("Time-to-fill report generated successfully: {}", averageTimeToFill);
         return new Response(true, "Time-to-fill report generated successfully", gson.toJson(responseDTO));
+    }
+
+    @Override
+    public Response getAllDepartments(String payload) throws RecruitmentBusinessException {
+        logger.info("Get all departments request");
+
+        List<Department> departments = departmentDAO.findAll(Department.class);
+        List<DepartmentResponseDTO> dto = departments.stream()
+                .map(d -> DepartmentResponseDTO.builder()
+                        .id(d.getId())
+                        .name(d.getName())
+                        .build()).
+                toList();
+        logger.info("Departments found: {}", dto.size());
+        return new Response(true, "Departments found: " + dto.size(), gson.toJson(dto));
     }
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface InterviewDAO extends GenericDAO<Interview> {
     boolean hasOverlappingInterviews(Long hrManagerId, LocalDateTime plannedTime);
     List<Interview> findByHrManagerId(Long hrManagerId);
+    List<Interview> findByApplicationId(Long applicationId);
 }
