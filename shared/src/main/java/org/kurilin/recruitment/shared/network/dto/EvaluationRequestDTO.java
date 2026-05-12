@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBlockRequestDTO {
-    private Long id;
-    private boolean isBlock;
+public class EvaluationRequestDTO {
+    private Long interviewId;
 }

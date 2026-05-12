@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBlockRequestDTO {
-    private Long id;
-    private boolean isBlock;
+public class EvaluationResponseDTO {
+    private Integer score;
+    private String comments;
+    private Boolean isPassed;
 }

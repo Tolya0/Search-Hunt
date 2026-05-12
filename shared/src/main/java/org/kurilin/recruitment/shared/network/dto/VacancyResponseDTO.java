@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.kurilin.recruitment.shared.enums.VacancyStatus;
 import org.kurilin.recruitment.shared.enums.WorkFormat;
 
 @Data
@@ -19,4 +20,5 @@ public class VacancyResponseDTO {
     private Integer salaryMin;
     private Integer salaryMax;
     private WorkFormat workFormat;
+    private VacancyStatus status;
 }

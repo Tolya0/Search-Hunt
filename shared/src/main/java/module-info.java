@@ -6,6 +6,8 @@ module org.kurilin.recruitment.shared {
     requires org.hibernate.orm.core;
 
     opens org.kurilin.recruitment.shared.entity to org.hibernate.orm.core;
+    opens org.kurilin.recruitment.shared.network.dto to com.google.gson;
+    opens org.kurilin.recruitment.shared.network to com.google.gson;
 
     exports org.kurilin.recruitment.shared.entity;
     exports org.kurilin.recruitment.shared.enums;

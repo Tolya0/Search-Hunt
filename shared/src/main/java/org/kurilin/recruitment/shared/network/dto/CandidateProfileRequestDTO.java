@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBlockRequestDTO {
+public class CandidateProfileRequestDTO {
     private Long id;
-    private boolean isBlock;
 }

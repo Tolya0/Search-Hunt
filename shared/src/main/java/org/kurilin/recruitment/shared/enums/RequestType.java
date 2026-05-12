@@ -11,6 +11,7 @@ public enum RequestType {
     CHANGE_PASSWORD,
     GET_ALL_SOURCES,
     GET_MY_APPLICATIONS,
+    GET_CANDIDATE_PROFILE,
 
     // HR
     SEARCH_CANDIDATES,
@@ -26,6 +27,8 @@ public enum RequestType {
     GET_VACANCY_APPLICATIONS,
     GET_HR_INTERVIEWS,
     ADD_EVALUATION,
+    GET_ALL_DEPARTMENTS,
+    GET_EVALUATION,
 
 
     // Admin

@@ -20,6 +20,7 @@ public class CandidateUpdateRequestDTO {
     private Integer experience;
     private String skills;
     private Integer expectedSalary;
+    private String resumeURL;
 }
 
 

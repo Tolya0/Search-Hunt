@@ -13,9 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationResponseDTO {
-    private Long applicationId;
+    private Long id;
     private String candidateName;
     private ApplicationStatus status;
     private LocalDateTime appliedAt;
     private String sourceName;
+    private String candidateEmail;
+    private String candidatePhone;
+    private Integer candidateExperience;
+    private String candidateSkills;
+    private String candidateResumeUrl;
 }

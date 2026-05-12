@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBlockRequestDTO {
+public class DepartmentResponseDTO {
     private Long id;
-    private boolean isBlock;
+    private String name;
+//    @Override
+//    public String toString() {
+//        return name;
+//    }
 }
