@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.kurilin.recruitment.client.controller.LoginController">
+   <padding>
+      <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+   </padding>
+   <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+      <VBox.margin>
+         <Insets/>
+      </VBox.margin>
+      <Image url="@logo.png"/>
+   </ImageView>
+   <Label styleClass="title-1" text="Search &amp; Hunt"/>
+   <Label text="Sign In " textFill="#c9c5c5"/>
+   <VBox maxWidth="300.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+      <TextField fx:id="usernameField" promptText="Login"/>
+      <PasswordField fx:id="passwordField" promptText="Password"/>
+   </VBox>
+   <Button defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" prefWidth="300.0" styleClass="accent"
+           text="Sign In"/>
+   <Button mnemonicParsing="false" onAction="#handleGoToRegister" styleClass="flat" text="Don't have an account? Sign Up" textFill="#888888" />
+</VBox>
