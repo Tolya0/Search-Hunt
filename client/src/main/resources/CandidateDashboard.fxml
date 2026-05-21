@@ -189,6 +189,7 @@
                                 <Separator prefWidth="200.0"/>
                                 <Label text="Change Password">
                                     <styleClass>
+                                        <String fx:value="card"/>
                                         <String fx:value="title-3"/>
                                     </styleClass>
                                 </Label>

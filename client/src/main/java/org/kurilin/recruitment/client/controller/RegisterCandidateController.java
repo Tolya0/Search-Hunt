@@ -87,8 +87,12 @@ public class RegisterCandidateController {
             AlertUtil.error("Validation Error", "Passwords do not match.");
             return;
         }
-        if (birthDate == null || sex == null) {
-            AlertUtil.error("Validation Error", "Please select Date of Birth and Sex.");
+        if (sex == null) {
+            AlertUtil.error("Validation Error", "Please select Sex.");
+            return;
+        }
+        if (!ValidationUtil.isValidDate(birthDate)) {
+            AlertUtil.error("Validation Error", "Invalid Date of Birth. Candidate must be at least 14 years old.");
             return;
         }
         int experienceInt = 0;

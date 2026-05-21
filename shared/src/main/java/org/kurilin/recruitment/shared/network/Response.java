@@ -1,6 +1,5 @@
 package org.kurilin.recruitment.shared.network;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

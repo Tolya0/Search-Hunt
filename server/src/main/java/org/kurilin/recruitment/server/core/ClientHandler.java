@@ -8,6 +8,7 @@ import org.kurilin.recruitment.shared.network.Response;
 import org.kurilin.recruitment.shared.util.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -42,12 +43,12 @@ public class ClientHandler implements Runnable {
 
                     Response response = dispatcher.dispatch(request);
                     out.println(gson.toJson(response));
-                } catch (RecruitmentBusinessException e){
+                } catch (RecruitmentBusinessException e) {
                     logger.warn("Business error: {}", e.getMessage());
                     Response response = new Response(false, e.getMessage(), null);
                     out.println(gson.toJson(response));
                 } catch (Exception e) {
-                    logger.error("Error while processing request: {}",message, e);
+                    logger.error("Error while processing request: {}", message, e);
                     Response response = new Response(false, "Error on server. ", null);
                     out.println(gson.toJson(response));
                 }

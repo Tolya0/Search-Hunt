@@ -1,7 +1,5 @@
 package org.kurilin.recruitment.shared.network;
 
-
-
 import lombok.*;
 import org.kurilin.recruitment.shared.enums.RequestType;
 

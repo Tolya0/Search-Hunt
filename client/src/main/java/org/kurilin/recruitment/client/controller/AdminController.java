@@ -173,8 +173,12 @@ public class AdminController {
 
         if (!isValidUserInput(fullName, email, phone)) return;
 
-        if (regBirthDatePicker.getValue() == null || regRoleComboBox.getValue() == null || regSexComboBox.getValue() == null) {
-            AlertUtil.error("Validation Error", "Please fill in all required fields");
+        if (regRoleComboBox.getValue() == null || regSexComboBox.getValue() == null) {
+            AlertUtil.error("Validation Error", "Please fill in all required fields.");
+            return;
+        }
+        if (!ValidationUtil.isValidDate(regBirthDatePicker.getValue())) {
+            AlertUtil.error("Validation Error", "Invalid Date of Birth. User must be at least 14 years old.");
             return;
         }
 

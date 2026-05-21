@@ -151,6 +151,10 @@ public class UserServiceImpl implements UserService {
         } else if (dto.getUsername() == null || dto.getPassword() == null || dto.getFullName() == null || dto.getEmail() == null || dto.getPhone() == null) {
             throw new InvalidCredentialsException("Invalid request format: username, password, full name, phone and email are required");
         }
+        if (dto.getBirthDate() != null && dto.getBirthDate().isAfter(java.time.LocalDate.now())) {
+            throw new InvalidCredentialsException("Validation Error: Birth date cannot be in the future.");
+        }
+
 
         if (isUsernameTaken(dto.getUsername())) {
             throw new DuplicateEntityException("Username is already taken");

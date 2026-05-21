@@ -17,6 +17,7 @@ import org.kurilin.recruitment.shared.util.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,10 @@ public class CandidateServiceImpl implements CandidateService {
         } else if (personDataDAO.findByPhone(dto.getPhone()).isPresent()) {
             throw new DuplicateEntityException("Phone is already taken");
         }
+        if (dto.getBirthDate().isAfter(LocalDate.now())) {
+            throw new RecruitmentBusinessException("Validation Error: Birth date cannot be in the future.");
+        }
+
 
         logger.info("Creating new candidate.");
         PersonData cData = PersonData.builder()
@@ -144,7 +149,12 @@ public class CandidateServiceImpl implements CandidateService {
             }
             candidate.getPersonData().setEmail(dto.getEmail());
         }
-        if (dto.getBirthDate() != null) candidate.getPersonData().setBirthDate(dto.getBirthDate());
+        if (dto.getBirthDate() != null) {
+            if (dto.getBirthDate().isAfter(LocalDate.now())) {
+                throw new RecruitmentBusinessException("Validation Error: Birth date cannot be in the future.");
+            }
+            candidate.getPersonData().setBirthDate(dto.getBirthDate());
+        }
 
         candidateDAO.update(candidate);
         logger.info("Candidate updated successfully: {}", candidate.getId());

@@ -19,15 +19,12 @@ public class Server {
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             logger.info("Server started on port {}", PORT);
-
             RequestDispatcher globalDispatcher = getGlobalDispatcher();
-
             Runtime.getRuntime()
                     .addShutdownHook(new Thread(() -> {
                 logger.info("Shutting down server");
                 HibernateSessionFactory.shutdown();
             }));
-
             //noinspection InfiniteLoopStatement
             while (true) {
                 Socket socket = serverSocket.accept();

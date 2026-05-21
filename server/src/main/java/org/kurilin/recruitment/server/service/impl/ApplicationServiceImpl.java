@@ -86,7 +86,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Integer expectedSalary = candidate.getExpectedSalary();
         Integer maxSalary = vacancy.getSalaryMax();
 
-        if (expectedSalary != null && maxSalary != null) {
+        if (expectedSalary != null) {
             if (expectedSalary <= maxSalary) {
                 totalScore += 30;
                 details.append("Salary: In budget (30/30).\n");
@@ -100,7 +100,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         String req = vacancy.getRequirements();
         String skills = candidate.getSkills();
 
-        if (req != null && skills != null) {
+        if (skills != null) {
             String cleanReq = req.toLowerCase().replaceAll("[^a-zа-я0-9\\s#+\\-.]", " ");
             String cleanSkills = skills.toLowerCase().replaceAll("[^a-zа-я0-9\\s#+\\-.]", " ");
 

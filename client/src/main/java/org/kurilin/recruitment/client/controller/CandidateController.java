@@ -22,6 +22,7 @@ import org.kurilin.recruitment.shared.network.dto.*;
 import org.kurilin.recruitment.shared.util.GsonFactory;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -289,6 +290,11 @@ public class CandidateController {
     private void handleUpdateProfile() {
         int experience = ValidationUtil.isNullOrBlank(profileExperienceField.getText()) ? 0 : Integer.parseInt(profileExperienceField.getText());
         int salary = ValidationUtil.isNullOrBlank(profileSalaryField.getText()) ? 0 : Integer.parseInt(profileSalaryField.getText());
+        LocalDate date = profileBirthDatePicker.getValue();
+        if (date != null && !ValidationUtil.isValidDate(date)) {
+            AlertUtil.error("Validation Error", "Invalid Date of Birth. Cannot be in the future or under 14 years old.");
+            return;
+        }
         CandidateUpdateRequestDTO dto = CandidateUpdateRequestDTO.builder()
                 .id(currentCandidateId)
                 .fullName(profileFullNameField.getText().strip())

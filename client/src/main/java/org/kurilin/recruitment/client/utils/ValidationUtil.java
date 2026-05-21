@@ -1,5 +1,6 @@
 package org.kurilin.recruitment.client.utils;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 public class ValidationUtil {
@@ -59,4 +60,8 @@ public class ValidationUtil {
         return selection != null;
     }
 
+    public static boolean isValidDate(LocalDate date) {
+        if (date == null) return false;
+        return date.isBefore(LocalDate.now().minusYears(14));
+    }
 }
